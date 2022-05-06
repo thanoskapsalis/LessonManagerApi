@@ -52,6 +52,7 @@ namespace Backend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public JsonResult CreateTecher([FromBody] Teacher teacher, [FromQuery] int? id = 0)
     {
+      PasswordManager pm = new PasswordManager();
       using (var db = new DataContext())
       {
 
@@ -69,7 +70,7 @@ namespace Backend.Controllers
           User user = new User()
           {
             username = username,
-            password = "temppassword" + random.Next(),
+            password =  pm.EncryptPassword("temppasswd"),
             email = username + "@aegean.gr",
             role = "teacher"
           };
@@ -122,6 +123,7 @@ namespace Backend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public JsonResult CreateStudent([FromBody] Student student, [FromQuery] int? id = 0)
     {
+      PasswordManager pm = new PasswordManager();
       using (var db = new DataContext())
       {
         if (id != 0)
@@ -137,7 +139,7 @@ namespace Backend.Controllers
           User user = new User()
           {
             username = username,
-            password = "temppassword" + random.Next(),
+            password = pm.EncryptPassword("temppasswd"),
             email = username + "@aegean.gr",
             role = "student"
           };
