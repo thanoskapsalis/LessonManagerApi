@@ -3,11 +3,13 @@ using Backend.Models;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
+using lessonApi.libs;
 
 namespace Backend.Controllers
 {
   public class UserController : Controller
   {
+
     [HttpPost]
     [Route("User/register")]
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -18,6 +20,10 @@ namespace Backend.Controllers
      */
     public JsonResult AddNewUser([FromBody] User user)
     {
+      string password = user.password;
+      PasswordManager pm = new PasswordManager();
+      user.password = pm.EncryptPassword(password);
+
       User? finalUser = null;
       // first we check if this user already exists in database
       using (var db = new DataContext())
@@ -183,12 +189,13 @@ namespace Backend.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public JsonResult Login([FromBody] User user)
     {
+      PasswordManager pm = new PasswordManager();
       User? selectedUser;
       using (var db = new DataContext())
       {
         selectedUser = db.Users.FirstOrDefault(sh =>
                  sh.username == user.username &&
-                 sh.password == user.password
+                 sh.password == pm.EncryptPassword(user.password)
                  );
         if (selectedUser == null)
         {
