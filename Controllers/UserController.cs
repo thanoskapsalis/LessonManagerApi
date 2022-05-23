@@ -10,10 +10,29 @@ namespace Backend.Controllers
   public class UserController : Controller
   {
 
+     public UserController() {
+       // If no admin User exist in database then create one by default
+       using(var db = new DataContext()) {
+         PasswordManager pm = new PasswordManager();
+         var admin = db.Users.FirstOrDefault(sh => sh.username == "admin");
+         if (admin == null) {
+           // then no admin is in the app 
+           User user = new User() {
+             username = "admin",
+             password = pm.EncryptPassword("admin"),
+             role = "admin",
+             email= "admin@admin.gr"
+           };
+           db.Add(user);
+           db.SaveChanges();
+         }
+       }
+
+     }
+
     [HttpPost]
     [Route("User/register")]
     [ApiExplorerSettings(IgnoreApi = true)]
-
     /**
      * Adds a new user to the system and returns his id 
      * the Creation fails if user already exists

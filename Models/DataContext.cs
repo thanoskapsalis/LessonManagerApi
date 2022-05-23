@@ -9,12 +9,15 @@ namespace Backend.Models
     public DataContext() { }
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
-    { }
+    {
+        Database.EnsureCreated();
+
+    }
 
     // Publishing to the contect the connection String provided in application.json
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-      options.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=WebApiDatabase;Trusted_Connection=True;");
+      options.UseSqlite($"Data Source=./Database/uniManager.db");
     }
     public DbSet<User> Users { get; set; }
     public DbSet<Student> Students { get; set; }
