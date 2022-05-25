@@ -250,7 +250,7 @@ namespace Backend.Controllers
       {
         if (id != 0)
         {
-          return Json(db.Teachers.First(sh => sh.Id == id));
+          return Json(db.Teachers.Include(sh=>sh.user).First(sh => sh.Id == id));
         }
         results = db.Teachers.Include(sh => sh.user).ToList();
       }
@@ -269,7 +269,7 @@ namespace Backend.Controllers
       {
         if (id != 0)
         {
-          return Json(db.Students.First(sh => sh.Id == id));
+          return Json(db.Students.Include(sh=>sh.user).First(sh => sh.Id == id));
         }
         results = db.Students.Include(sh => sh.user).ToList();
       }
